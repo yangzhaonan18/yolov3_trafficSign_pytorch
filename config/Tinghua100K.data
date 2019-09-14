@@ -1,6 +1,7 @@
 classes=29
 train=data/Tinghua100K/train.txt
-valid=data/Tinghua100K/test.txt
+valid=data/Tinghua100K/valid.txt
+test=data/Tinghua100K/test.txt
 names=data/Tinghua100K.names
 backup=backup/
 eval=coco

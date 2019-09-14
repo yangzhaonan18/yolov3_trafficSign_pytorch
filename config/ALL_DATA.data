@@ -1,0 +1,7 @@
+classes=1
+train=data/ALL_DATA/train.txt
+valid=data/ALL_DATA/valid.txt
+test=data/ALL_DATA/test.txt
+names=data/ALL_DATA.names
+backup=backup/
+eval=coco

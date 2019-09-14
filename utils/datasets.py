@@ -57,12 +57,12 @@ class ImageFolder(Dataset):
 
 
 class ListDataset(Dataset):
-    def __init__(self, list_path, img_size=1248, augment=True, multiscale=True, normalized_labels=True):
+    def __init__(self, list_path, img_size=1216, augment=True, multiscale=True, normalized_labels=True):
         with open(list_path, "r") as file:
             self.img_files = file.readlines()
 
         self.label_files = [
-            path.replace("images", "labels").replace(".png", ".txt").replace(".jpg", ".txt")
+            path.replace("images_jpg", "labels").replace(".png", ".txt").replace(".jpg", ".txt")
             for path in self.img_files
         ]
         self.img_size = img_size
@@ -71,7 +71,7 @@ class ListDataset(Dataset):
         self.multiscale = multiscale
         self.normalized_labels = normalized_labels
         self.min_size = self.img_size - 3 * 32
-        self.max_size = self.img_size + 3 * 32
+        self.max_size = self.img_size + 0 * 32
         self.batch_count = 0
 
     def __getitem__(self, index):
