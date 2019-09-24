@@ -4,21 +4,12 @@ import os
 import sys
 import numpy as np
 from PIL import Image
-
-
 import torch
 import torch.nn.functional as F
 
 from utils.augmentations import horisontal_flip
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
-
-import random
-
-
-import matplotlib.pyplot as plt 
-from PIL import Image
-import matplotlib.patches as patches
 
 
 def pad_to_square(img, pad_value):
@@ -34,87 +25,6 @@ def pad_to_square(img, pad_value):
     return img, pad
 
 
-def crop_pad_to_size(img, targets, resize_rat, pad_value):
-    c, h, w = img.shape
-    img = F.interpolate(img.unsqueeze(0), size=[int(resize_rat * w), int(resize_rat * w)],
-                                    mode="nearest").squeeze(0)
-    if resize_rat >= 1:
-        img = img[:, :w, :w]
-    else:
-        diff =  w - int(resize_rat * w)
-        # Determine padding
-        pad = (0, diff, 0, diff)  
-        # Add padding
-        img = F.pad(img, pad, "constant", value=pad_value)
-
-    targets[:, 2:] = targets[:, 2:] * resize_rat 
-
-    return img, targets
-
-    
-
-
-
-def random_resize_ratio(img, targets, small_size, large_size):  # yzn
-    # print(type(img))
-    # print(type(targets))
-    # print("img.size() = ", img.size())
-    # print(targets.size())
-    # print(targets)
-    #  augment add by yzn 
-    #  if all targets size > 0.5, this image should be resize to normal 
-    # sign size
-    min_wh = torch.min(torch.min(targets[:, 4]), torch.min(targets[:, 5]))  #  
-    max_wh = torch.max(torch.max(targets[:, 4]), torch.max(targets[:, 5]))
-    min_size = min_wh * img.shape[1]  # all objects size in this picture 
-    max_size = max_wh * img.shape[1]  # 
-    min_resize_sign_rat = small_size / min_size
-    
-
-    max_crop_rat = 1 / torch.max( torch.max(targets[:, 2]) + torch.max(targets[:, 4]), 
-        torch.max(targets[:, 3]) + torch.max(targets[:, 5]))
-
-    max_resize_sign_rat = torch.min(large_size / max_size,  max_crop_rat)
-
-    # print("min and max = ", min_resize_sign_rat, max_resize_sign_rat)
-
-    if min_resize_sign_rat + 0.2 < max_resize_sign_rat:
-        resize_rat = random.uniform(min_resize_sign_rat + 0.2, max_resize_sign_rat)
-    else:
-        resize_rat = 1
-    print("resize_rat = ", max_resize_sign_rat)
-    return max_resize_sign_rat # resize_rat
-
- 
-
-def show_img_target(img, targets):
-    c, h, w = img.shape
-    transf_img = img.squeeze(0).permute(1, 2, 0)
-
-    print(transf_img.shape)
-    plt.imshow(transf_img)
-    currentAxis=plt.gca()
-    for target in targets: 
-        x1 = int((target[2] - target[4] / 2) * w)
-        y1 = int((target[3] - target[5] / 2) * w)
-        w1 = int(target[4] * w)
-        h1 = int(target[5] * w)
-        rect = patches.Rectangle((x1, y1), w1, h1 , linewidth=1, edgecolor='r', facecolor='none')
-        currentAxis.add_patch(rect)
-    plt.show()
-
-
-def resize_to_smaller_bigger(img, targets, img_size, small_size=15, large_size=250):  # yzn 
-    c, h, w = img.shape
-    resize_rat = random_resize_ratio(img, targets, small_size=small_size, large_size=large_size)
-
-    img, targets = crop_pad_to_size(img, targets, resize_rat, pad_value=0) 
-
-    img = F.interpolate(img.unsqueeze(0), size=img_size, mode="nearest").squeeze(0)
-
-    return img, targets
-
-
 def resize(image, size):
     image = F.interpolate(image.unsqueeze(0), size=size, mode="nearest").squeeze(0)
     return image
@@ -126,7 +36,7 @@ def random_resize(images, min_size=288, max_size=448):
     return images
 
 
-class ImageFolder(Dataset):  # not being used (yzn)
+class ImageFolder(Dataset):
     def __init__(self, folder_path, img_size=416):
         self.files = sorted(glob.glob("%s/*.*" % folder_path))
         self.img_size = img_size
@@ -141,7 +51,6 @@ class ImageFolder(Dataset):  # not being used (yzn)
         img = resize(img, self.img_size)
 
         return img_path, img
-
 
     def __len__(self):
         return len(self.files)
@@ -161,7 +70,7 @@ class ListDataset(Dataset):
         self.augment = augment
         self.multiscale = multiscale
         self.normalized_labels = normalized_labels
-        self.min_size = self.img_size - 0 * 32
+        self.min_size = self.img_size - 3 * 32
         self.max_size = self.img_size + 0 * 32
         self.batch_count = 0
 
@@ -215,23 +124,15 @@ class ListDataset(Dataset):
             targets = torch.zeros((len(boxes), 6))
             targets[:, 1:] = boxes
 
-         
-        # input("asdf")
-       
-        img, targets = resize_to_smaller_bigger(img, targets, self.img_size, small_size=15, large_size=250)  # img is 1360 x 1360
-        # show  image 
-        show_img_target(img, targets)
-
         # Apply augmentations
         if self.augment:
-            if np.random.random() < 0.9999:
+            if np.random.random() < 0.5:
                 img, targets = horisontal_flip(img, targets)
         # print("img = ", img.shape)
         # print("targets = ", targets)
-
-        img, targets = resize_to_smaller_bigger(img, targets, self.img_size, small_size=15, large_size=250)  # img is 1360 x 1360
-        # show  image 
-        show_img_target(img, targets)
+        print(img.size())
+        print(targets.size())
+        print(targets)
 
         return img_path, img, targets
 
@@ -249,7 +150,6 @@ class ListDataset(Dataset):
         # Resize images to input shape
         imgs = torch.stack([resize(img, self.img_size) for img in imgs])
         self.batch_count += 1
-      
         return paths, imgs, targets
 
     def __len__(self):

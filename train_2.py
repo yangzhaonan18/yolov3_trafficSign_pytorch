@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_def", type=str, default="config/ALL_DATA.cfg", help="path to model definition file")
     parser.add_argument("--data_config", type=str, default="config/ALL_DATA.data", help="path to data config file")
     parser.add_argument("--pretrained_weights", type=str, help="if specified starts from checkpoint model")
-    parser.add_argument("--n_cpu", type=int, default=1, help="number of cpu threads to use during batch generation")
+    parser.add_argument("--n_cpu", type=int, default=4, help="number of cpu threads to use during batch generation")
     # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
     parser.add_argument("--checkpoint_interval", type=int, default=1, help="interval between saving model weights")
     parser.add_argument("--evaluation_interval", type=int, default=10, help="interval evaluations on validation set")
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=opt.batch_size,
-        shuffle=True, #True, #True,  # True
+        shuffle= True, #False, #True,  # True
         num_workers=opt.n_cpu,
         pin_memory=True,
         collate_fn=dataset.collate_fn,
@@ -121,14 +121,26 @@ if __name__ == "__main__":
     for epoch in range(opt.epochs):
         model.train()
         start_time = time.time()
+
         for batch_i, (path, imgs, targets) in enumerate(dataloader):
-            batches_done = len(dataloader) * epoch + batch_i     
+            print(path)
+            print("img.size=",imgs.size())
+            print(imgs.shape)
+            print(targets.shape)
+
+            batches_done = len(dataloader) * epoch + batch_i
+
+           
+
             imgs = Variable(imgs.to(device))
             targets = Variable(targets.to(device), requires_grad=False)
             
             # imgs = Variable(imgs.cuda())
             # targets = Variable(targets.cuda(), requires_grad=False)
             
+
+
+
             # with torch.no_grad():  # RuntimeError: CUDA out of memory. Tried to allocate 32.12 MiB (GPU 0; 7.93 GiB total capacity; 7.25 GiB already allocated; 2.56 MiB free; 44.76 MiB cached)
             loss, outputs = model(imgs, targets) # 
             loss.backward()

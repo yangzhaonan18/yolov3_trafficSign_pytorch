@@ -27,7 +27,7 @@ from tensorboardX import SummaryWriter
 
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES']='7'
+os.environ['CUDA_VISIBLE_DEVICES']='6'
 
 
 if __name__ == "__main__":
@@ -35,11 +35,11 @@ if __name__ == "__main__":
     # parser.add_argument("--epochs", type=int, default=200, help="number of epochs")
     # parser.add_argument("--batch_size", type=int, default=1, help="size of each image batch")
     # parser.add_argument("--gradient_accumulations", type=int, default=2, help="number of gradient accums before step")
-    parser.add_argument("--model_def", type=str, default="config//yolov3.cfg", help="path to model definition file")
-    parser.add_argument("--data_config", type=str, default="config/Tinghua100K.data", help="path to data config file")
+    parser.add_argument("--model_def", type=str, default="config/ALL_DATA.cfg", help="path to model definition file")
+    parser.add_argument("--data_config", type=str, default="config/ALL_DATA.data", help="path to data config file")
     # parser.add_argument("--pretrained_weights", type=str, help="if specified starts from checkpoint model")
     # parser.add_argument("--n_cpu", ype=int, default=4, help="number of cpu threads to use during batch generation")
-    parser.add_argument("--img_size", type=int, default=1248, help="size of each image dimension")
+    parser.add_argument("--img_size", type=int, default=1216, help="size of each image dimension")
     # parser.add_argument("--checkpoint_interval", type=int, default=1, help="interval between saving model weights")
     # parser.add_argument("--evaluation_interval", type=int, default=1, help="interval evaluations on validation set")
     # parser.add_argument("--compute_map", default=False, help="if True computes mAP every tenth batch")
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     opt = parser.parse_args()
 
 
-    writer = SummaryWriter(log_dir="log_val_figure_dir")
+    writer = SummaryWriter(log_dir="log_val_figure_dir_class_1")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     data_config = parse_data_config(opt.data_config)
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     weights_dir = "checkpoints"
     weights = os.listdir(weights_dir)
 
-    for i in range(115, len(weights), 5):
+    for i in range(81, len(weights), 3):
         
         path = os.path.join(weights_dir, weights[i])
 

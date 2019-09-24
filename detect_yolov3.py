@@ -21,18 +21,12 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.ticker import NullLocator
 
-
-
-import os
-os.environ['CUDA_VISIBLE_DEVICES']='5'
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_folder", type=str, default="data/samples", help="path to dataset")
-    parser.add_argument("--model_def", type=str, default="config/ALL_DATA.cfg", help="path to model definition file")
+    parser.add_argument("--model_def", type=str, default="config/yolov3.cfg", help="path to model definition file")
     parser.add_argument("--weights_path", type=str, default="weights/yolov3.weights", help="path to weights file")
-    parser.add_argument("--class_path", type=str, default="data/ALL_DATA.names", help="path to class label file")
+    parser.add_argument("--class_path", type=str, default="data/coco.names", help="path to class label file")
     parser.add_argument("--conf_thres", type=float, default=0.8, help="object confidence threshold")
     parser.add_argument("--nms_thres", type=float, default=0.4, help="iou thresshold for non-maximum suppression")
     parser.add_argument("--batch_size", type=int, default=1, help="size of the batches")
@@ -105,12 +99,10 @@ if __name__ == "__main__":
 
         # Create plot
         img = np.array(Image.open(path))
-        print("img.shape = ", img.shape) # ( 2048 2048 3 )
-
         plt.figure()
         fig, ax = plt.subplots(1)
         ax.imshow(img)
-        
+
         # Draw bounding boxes and labels of detections
         if detections is not None:
             # Rescale boxes to original image
@@ -126,15 +118,14 @@ if __name__ == "__main__":
                 box_h = y2 - y1
 
                 color = bbox_colors[int(np.where(unique_labels == int(cls_pred))[0])]
-                color = "r"
                 # Create a Rectangle patch
-                bbox = patches.Rectangle((x1, y1), box_w, box_h, linewidth=1, edgecolor=color, facecolor="none")
+                bbox = patches.Rectangle((x1, y1), box_w, box_h, linewidth=2, edgecolor=color, facecolor="none")
                 # Add the bbox to the plot
                 ax.add_patch(bbox)
                 # Add label
                 plt.text(
                     x1,
-                    y2 + 50,
+                    y1,
                     s=classes[int(cls_pred)],
                     color="white",
                     verticalalignment="top",

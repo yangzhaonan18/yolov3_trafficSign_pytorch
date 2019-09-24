@@ -114,8 +114,8 @@ class YOLOLayer(nn.Module):
         self.num_anchors = len(anchors)
         self.num_classes = num_classes
         self.ignore_thres = 0.5
-        self.mse_loss = nn.MSELoss()
-        self.bce_loss = nn.BCELoss()
+        self.mse_loss = nn.MSELoss().cuda()  #  yzn addd .cuda 
+        self.bce_loss = nn.BCELoss().cuda()
         self.obj_scale = 1
         self.noobj_scale = 100
         self.metrics = {}
@@ -128,8 +128,15 @@ class YOLOLayer(nn.Module):
         FloatTensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
         self.stride = self.img_dim / self.grid_size
         # Calculate offsets for each grid
+        
         self.grid_x = torch.arange(g).repeat(g, 1).view([1, 1, g, g]).type(FloatTensor)
+        # print("66"* 6, self.grid_x)
         self.grid_y = torch.arange(g).repeat(g, 1).t().view([1, 1, g, g]).type(FloatTensor)
+        # print("66"* 6, self.grid_y)
+        # self.grid_x = torch.linspace(0, grid_size-1, grid_size).repeat(grid_size,1).repeat(self.num_samples*self.num_anchors, 1, 1).view([1, 1, g, g]).type(FloatTensor)
+
+
+
         self.scaled_anchors = FloatTensor([(a_w / self.stride, a_h / self.stride) for a_w, a_h in self.anchors])
         self.anchor_w = self.scaled_anchors[:, 0:1].view((1, self.num_anchors, 1, 1))
         self.anchor_h = self.scaled_anchors[:, 1:2].view((1, self.num_anchors, 1, 1))
@@ -145,6 +152,7 @@ class YOLOLayer(nn.Module):
         self.img_dim = img_dim
 
         num_samples = x.size(0)
+        self.num_samples = num_samples
         grid_size = x.size(2)
                
         prediction = (
