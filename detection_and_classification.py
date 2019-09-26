@@ -29,18 +29,33 @@ from utils.utils import rescale_boxes
 from utils.datasets import pad_to_square, resize
 
 
-import os
-os.environ['CUDA_VISIBLE_DEVICES']='1'
+ 
+
+from ALL_sign_data.model import Lenet5, my_resnt18, FashionCNN
+
+
+
+os.environ['CUDA_VISIBLE_DEVICES']='3'
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+sign_classes = 118
+weights_path = "ALL_sign_data/model_acc_90__epoch_5.pt"
+
+
+
+# os.makedirs("output", exist_ok=True)
 
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image_folder", type=str, default="data/samples", help="path to dataset")
+    parser.add_argument("--image_folder", type=str, default="data/changshu_17_before", help="path to dataset")
     parser.add_argument("--model_def", type=str, default="config/ALL_DATA.cfg", help="path to model definition file")
     # parser.add_argument("--weights_path", type=str, default="checkpoints/yolov3_ckpt_13.pth", help="path to weights file")
     parser.add_argument("--weights_path", type=str, default="checkpoints_1/yolov3_ckpt_24.pth", help="path to weights file")
-    parser.add_argument("--class_path", type=str, default="data/ALL_DATA.names", help="path to class label file")
+    # parser.add_argument("--class_path", type=str, default="data/ALL_DATA.names", help="path to class label file")
+    parser.add_argument("--class_path", type=str, default="ALL_sign_data/ALL_data_in/names.txt", help="path to class label file")
     parser.add_argument("--conf_thres", type=float, default=0.8, help="object confidence threshold")
     parser.add_argument("--nms_thres", type=float, default=0.4, help="iou thresshold for non-maximum suppression")
     parser.add_argument("--batch_size", type=int, default=1, help="size of the batches")
@@ -49,6 +64,8 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint_model", type=str, help="path to checkpoint model")
     opt = parser.parse_args()
     print(opt)
+
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -83,6 +100,15 @@ if __name__ == "__main__":
     print("\nPerforming object detection:")
     # prev_time = time.time()
 
+    # to  class
+    model_class = FashionCNN(sign_classes)
+    model_class.load_state_dict(torch.load(weights_path))
+    model_class.to(device)
+    model_class.eval()
+    # to  class
+
+
+
 
 
 
@@ -111,6 +137,7 @@ if __name__ == "__main__":
             detections = model(input_imgs.to(device))
             detections = non_max_suppression(detections, opt.conf_thres, opt.nms_thres)[0]
 
+
         # Log progress
         # current_time = time.time()
         # inference_time = datetime.timedelta(seconds=current_time - prev_time)
@@ -131,37 +158,79 @@ if __name__ == "__main__":
             # plt.figure()
             fig, ax = plt.subplots()
             img_copy =Image.open(img_path) 
-            ax.imshow(img_copy)
-            for x1, y1, x2, y2, conf, cls_conf, cls_pred in detections:
+            # ax.imshow(img_copy)
+            for i, (x1, y1, x2, y2, conf, cls_conf, cls_pred) in enumerate(detections):
+                
+                x1 = int(x1)
+                y1 = int(y1)
+                x2 = int(x2)
+                y2 = int(y2)
                 box_w = x2 - x1
                 box_h = y2 - y1
-
-                crop_sign = img_copy[x1:x2, y1:y2]
-                sign_type = 
-
-               
-                # color = bbox_colors[int(np.where(unique_labels == int(cls_pred))[0])]
-                color = "r"
-                # Create a Rectangle patch
-                # plt.imshow()
-                bbox = patches.Rectangle((x1, y1), box_w, box_h, linewidth=1, edgecolor=color, facecolor="none")
-                # Add the bbox to the plot
-                ax.add_patch(bbox)
-                # Add label
-                plt.text(
-                    x1,
-                    y2 + 50,
-                    s=classes[int(cls_pred)],
-                    color="white",
-                    verticalalignment="top",
-                    bbox={"color": color, "pad": 0},
-                )
                 
+                if box_w >=15 and box_h >= 15:
+                    crop_sign = img_copy.crop((x1, y1, x2, y2))
+                    # sign_type = 
+
+                    # #### to class  ###############
+                    test_transform = torchvision.transforms.Compose([ 
+                        torchvision.transforms.Resize((28, 28), interpolation=2),
+                        torchvision.transforms.ToTensor(),
+                        torchvision.transforms.Normalize(mean=[0.5], std=[0.5])
+                        ])
+
+                    crop_sign_input = test_transform(crop_sign).unsqueeze(0)
+                    # input_img = torch.autograd.Variable(input_img)
+
+                    # print("input_img = ", input_img.size())
+                    with torch.no_grad():
+                        pred_class = model_class(crop_sign_input.to(device))
+                    sign_type  = torch.max(pred_class, 1)[1].to("cpu").numpy()[0]
+                    # #### to class  ###############
+                    cls_pred = sign_type
+
+
+                    print("cls_pred = ", cls_pred)
+
+
+
+
+                   
+                    # color = bbox_colors[int(np.where(unique_labels == int(cls_pred))[0])]
+                    color = "r"
+                    # Create a Rectangle patch
+                    # plt.imshow()
+                    bbox = patches.Rectangle((x1, y1), box_w, box_h, linewidth=1, edgecolor=color, facecolor="none")
+                    # Add the bbox to the plot
+                    ax.add_patch(bbox)
+                    # Add label
+                    plt.text(
+                        x1,
+                        y2 + 50,
+                        s=classes[int(cls_pred)],
+                        color="white",
+                        verticalalignment="top",
+                        bbox={"color": color, "pad": 0},
+                    )
+                    
+
+                    pad_sign_path = "ALL_sign_data/pad-all/" + classes[int(cls_pred)] + ".png"
+                    if  os.path.isfile(pad_sign_path):
+                        pad_sign = Image.open(pad_sign_path)
+                    else:
+                        pad_sign = Image.new("RGB", (100, 100), (255, 255, 255))
+
+
+                    img_copy.paste(crop_sign.resize((100, 100)), (0, i * 100) )
+                    img_copy.paste(pad_sign.resize((100, 100)), (100, i * 100) )
+                    
             # Save generated image with detections
             # plt.axis("off")
             # plt.gca().xaxis.set_major_locator(NullLocator())
             # plt.gca().yaxis.set_major_locator(NullLocator())
            
+
+            ax.imshow(img_copy)
             plt.show()
 
 
@@ -234,4 +303,5 @@ if __name__ == "__main__":
         # filename = path.split("/")[-1].split(".")[0]
         # plt.savefig(f"output/{filename}.png", bbox_inches="tight", pad_inches=0.0, dpi=400)
         # plt.close()
+
 

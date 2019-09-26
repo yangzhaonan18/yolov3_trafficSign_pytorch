@@ -26,7 +26,7 @@ from utils.show import print_accuracy
  
 
 np.random.seed(0)
-classes = 145
+classes = 118
 epochs  = 30
 batch_size = 64
 learning_rate = 0.002
@@ -242,9 +242,10 @@ for epoch in range(epochs):
 
     test_accuracy = int(100 * correct / len(test_loader))
 
-    if test_accuracy > 99 and flag == 0:
+    if test_accuracy > 91 and flag == 0:
         flag = 1
         torch.save(model.state_dict(), f'model_acc_90__epoch_{epoch}.pt')
+        break #  stop training
 
 
     print(f"Epoch: {epoch},",
