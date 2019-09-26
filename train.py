@@ -27,7 +27,7 @@ from tensorboardX import SummaryWriter
 
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES']='6'
+os.environ['CUDA_VISIBLE_DEVICES']='7'
 
 
 if __name__ == "__main__":
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_def", type=str, default="config/ALL_DATA.cfg", help="path to model definition file")
     parser.add_argument("--data_config", type=str, default="config/ALL_DATA.data", help="path to data config file")
     parser.add_argument("--pretrained_weights", type=str, help="if specified starts from checkpoint model")
-    parser.add_argument("--n_cpu", type=int, default=1, help="number of cpu threads to use during batch generation")
+    parser.add_argument("--n_cpu", type=int, default=2, help="number of cpu threads to use during batch generation")
     # parser.add_argument("--img_size", type=int, default=416, help="size of each image dimension")
     parser.add_argument("--checkpoint_interval", type=int, default=1, help="interval between saving model weights")
     parser.add_argument("--evaluation_interval", type=int, default=10, help="interval evaluations on validation set")
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=opt.batch_size,
-        shuffle=True, #True, #True,  # True
+        shuffle=True, #True, #True,  # False
         num_workers=opt.n_cpu,
         pin_memory=True,
         collate_fn=dataset.collate_fn,
@@ -117,11 +117,14 @@ if __name__ == "__main__":
         "conf_noobj",
     ]
 
-    # for epoch in range(int(opt.pretrained_weights.replace("checkpoints/yolov3_ckpt_", '').replace('.pth', '')) + 1, opt.epochs):
-    for epoch in range(opt.epochs):
+    for epoch in range(int(opt.pretrained_weights.replace("checkpoints/yolov3_ckpt_", '').replace('.pth', '')) + 1, opt.epochs):
+    # for epoch in range(opt.epochs):
         model.train()
         start_time = time.time()
+        
         for batch_i, (path, imgs, targets) in enumerate(dataloader):
+            print("path", path)
+
             batches_done = len(dataloader) * epoch + batch_i     
             imgs = Variable(imgs.to(device))
             targets = Variable(targets.to(device), requires_grad=False)
@@ -179,7 +182,8 @@ if __name__ == "__main__":
             print(log_str)
 
             model.seen += imgs.size(0)
-        
+           
+
         # if epoch % opt.evaluation_interval == 0:
         #     print("\n---- Evaluating Model ----")
         #     # Evaluate the model on the validation set
@@ -212,5 +216,4 @@ if __name__ == "__main__":
 
         if epoch % opt.checkpoint_interval == 0:
             torch.save(model.state_dict(), f"checkpoints/yolov3_ckpt_%d.pth" % epoch)
-
         

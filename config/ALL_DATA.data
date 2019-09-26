@@ -1,5 +1,5 @@
 classes=1
-train=data/ALL_DATA/train.txt
+train=data/ALL_DATA/train_all_data.txt
 valid=data/ALL_DATA/valid.txt
 test=data/ALL_DATA/test.txt
 names=data/ALL_DATA.names

@@ -34,8 +34,29 @@ def pad_to_square(img, pad_value):
     return img, pad
 
 
-def crop_pad_to_size(img, targets, resize_rat, pad_value):
+ 
+
+def show_img_target(img, targets):
     c, h, w = img.shape
+    transf_img = img.squeeze(0).permute(1, 2, 0)
+
+    print(transf_img.shape)
+    plt.imshow(transf_img)
+    currentAxis=plt.gca()
+    for target in targets: 
+        x1 = int((target[2] - target[4] / 2) * w)
+        y1 = int((target[3] - target[5] / 2) * w)
+        w1 = int(target[4] * w)
+        h1 = int(target[5] * w)
+        rect = patches.Rectangle((x1, y1), w1, h1 , linewidth=1, edgecolor='r', facecolor='none')
+        currentAxis.add_patch(rect)
+    plt.show()
+
+
+def crop_pad_to_size_copy_to_save(img, targets, resize_rat, pad_value):
+    c, h, w = img.shape
+    
+    
     img = F.interpolate(img.unsqueeze(0), size=[int(resize_rat * w), int(resize_rat * w)],
                                     mode="nearest").squeeze(0)
     if resize_rat >= 1:
@@ -51,9 +72,71 @@ def crop_pad_to_size(img, targets, resize_rat, pad_value):
 
     return img, targets
 
+
+def crop_pad_to_size(img, targets, resize_rat, pad_value):
+
+    c, h, w = img.shape
+   
+    img = F.interpolate(img.unsqueeze(0), size=[int(resize_rat * w), int(resize_rat * w)],
+                                    mode="nearest").squeeze(0)
+ 
+    if resize_rat >= 1:
+        img = img[:, :w, :w]
+    else:
+        diff =  w - int(resize_rat * w)
+        # Determine padding
+        pad = (0, diff, 0, diff)  
+        # Add padding
+        img = F.pad(img, pad, "constant", value=pad_value)
+
+    targets[:, 2:] = targets[:, 2:] * resize_rat 
+
+    # c, h, w = img.shape
+    # min_x1 = torch.min(torch.min(targets[:, 2] - targets[:, 4]/2 )) * w 
+    # min_y1 = torch.min(torch.min(targets[:, 3] - targets[:, 5]/2 )) * w 
+    # rand_wh = int(random.uniform(0, torch.min(min_x1, min_y1)) )
+    # img = img[ : , rand_wh: , rand_wh: ]
+    # targets[:, 2:] = targets[:, 2:] * (w / (w - rand_wh))
+
+    return img, targets
+
     
+def random_resize_ratio_2(img, targets, img_size, small_sign, large_sign):  # yzn
+    c, h, w = img.shape
+    # all position of signs in x1y1 x2y2 
+    min_x1 = torch.min(torch.min(targets[:, 2] - targets[:, 4]/2 )) * w 
+    min_y1 = torch.min(torch.min(targets[:, 3] - targets[:, 5]/2 )) * w 
+
+    max_x2 = torch.max(torch.max(targets[:, 2] + targets[:, 4]/2 )) * w 
+    max_y2 = torch.max(torch.max(targets[:, 3] + targets[:, 5]/2 )) * w   
+
+    crop_min_h = max_y2 - min_y1
+    crop_min_w = max_x2 - min_x1
+    # print("crop_min_h, crop_min_w = ", crop_min_h, crop_min_w)
+    crop_min_size = torch.max(crop_min_h, crop_min_w)
 
 
+    # size of all signs
+    sign_min = torch.min(torch.min(targets[:, 4]), torch.min(targets[:, 5])) * w    
+    sign_max = torch.max(torch.max(targets[:, 4]), torch.max(targets[:, 5])) * w 
+    print("sign_min, sign_max = ", sign_min, sign_max)
+    # crop  a small image from the original image 
+    s_ratio = img_size / large_sign  #  1000 / 100  = 10 
+    l_ratio = img_size / small_sign  #  1000 / 10   = 100 
+    print("s_ratio,l_ratio = ", s_ratio, l_ratio)
+    # crop should between the two value below
+ 
+    min_crop = max(sign_max * s_ratio, crop_min_size)
+    max_crop = min(sign_min * l_ratio, w)
+    if min_crop < max_crop:
+        print("min_crop, max_crop = ", min_crop, max_crop)
+        crop_w = random.uniform(min_crop, max_crop)
+        # x1 = 
+    
+    # return img, (x1, y1, w, h), 
+   # ###############################
+
+   
 
 def random_resize_ratio(img, targets, small_size, large_size):  # yzn
     # print(type(img))
@@ -79,31 +162,14 @@ def random_resize_ratio(img, targets, small_size, large_size):  # yzn
     # print("min and max = ", min_resize_sign_rat, max_resize_sign_rat)
 
     if min_resize_sign_rat + 0.2 < max_resize_sign_rat:
+        # print("min_resize_sign_rat + 0.2, max_resize_sign_rat = ", min_resize_sign_rat + 0.2, max_resize_sign_rat)
         resize_rat = random.uniform(min_resize_sign_rat + 0.2, max_resize_sign_rat)
     else:
         resize_rat = 1
-    print("resize_rat = ", max_resize_sign_rat)
-    return max_resize_sign_rat # resize_rat
+    # print("resize_rat = ", resize_rat)
+    return resize_rat # resize_rat
 
  
-
-def show_img_target(img, targets):
-    c, h, w = img.shape
-    transf_img = img.squeeze(0).permute(1, 2, 0)
-
-    print(transf_img.shape)
-    plt.imshow(transf_img)
-    currentAxis=plt.gca()
-    for target in targets: 
-        x1 = int((target[2] - target[4] / 2) * w)
-        y1 = int((target[3] - target[5] / 2) * w)
-        w1 = int(target[4] * w)
-        h1 = int(target[5] * w)
-        rect = patches.Rectangle((x1, y1), w1, h1 , linewidth=1, edgecolor='r', facecolor='none')
-        currentAxis.add_patch(rect)
-    plt.show()
-
-
 def resize_to_smaller_bigger(img, targets, img_size, small_size=15, large_size=250):  # yzn 
     c, h, w = img.shape
     resize_rat = random_resize_ratio(img, targets, small_size=small_size, large_size=large_size)
@@ -113,6 +179,7 @@ def resize_to_smaller_bigger(img, targets, img_size, small_size=15, large_size=2
     img = F.interpolate(img.unsqueeze(0), size=img_size, mode="nearest").squeeze(0)
 
     return img, targets
+
 
 
 def resize(image, size):
@@ -215,25 +282,26 @@ class ListDataset(Dataset):
             targets = torch.zeros((len(boxes), 6))
             targets[:, 1:] = boxes
 
-         
-        # input("asdf")
        
-        img, targets = resize_to_smaller_bigger(img, targets, self.img_size, small_size=15, large_size=250)  # img is 1360 x 1360
+        img, targets = resize_to_smaller_bigger(img, targets, self.img_size, small_size=15, large_size=200)  # img is 1360 x 1360
+        
         # show  image 
-        show_img_target(img, targets)
+        # show_img_target(img, targets)
 
         # Apply augmentations
         if self.augment:
-            if np.random.random() < 0.9999:
+            if np.random.random() < 0.5:
                 img, targets = horisontal_flip(img, targets)
-        # print("img = ", img.shape)
-        # print("targets = ", targets)
-
-        img, targets = resize_to_smaller_bigger(img, targets, self.img_size, small_size=15, large_size=250)  # img is 1360 x 1360
-        # show  image 
-        show_img_target(img, targets)
+        img, targets = resize_to_smaller_bigger(img, targets, self.img_size, small_size=15, large_size=200)  # img is 1360 x 1360
+        
+        # ##########
+        # show  image
+        # ##########
+        # show_img_target(img, targets)
 
         return img_path, img, targets
+
+
 
     def collate_fn(self, batch):
         paths, imgs, targets = list(zip(*batch))

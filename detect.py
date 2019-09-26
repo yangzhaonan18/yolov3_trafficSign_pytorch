@@ -98,6 +98,7 @@ if __name__ == "__main__":
     colors = [cmap(i) for i in np.linspace(0, 1, 20)]
 
     print("\nSaving images:")
+
     # Iterate through images and save plot of detections
     for img_i, (path, detections) in enumerate(zip(imgs, img_detections)):
 
@@ -114,7 +115,7 @@ if __name__ == "__main__":
         # Draw bounding boxes and labels of detections
         if detections is not None:
             # Rescale boxes to original image
-            detections = rescale_boxes(detections, opt.img_size, img.shape[:2])
+            detections = rescale_boxes(detections, opt.img_size, img.shape[1:])
             unique_labels = detections[:, -1].cpu().unique()
             n_cls_preds = len(unique_labels)
             bbox_colors = random.sample(colors, n_cls_preds)
@@ -148,3 +149,4 @@ if __name__ == "__main__":
         filename = path.split("/")[-1].split(".")[0]
         plt.savefig(f"output/{filename}.png", bbox_inches="tight", pad_inches=0.0, dpi=400)
         plt.close()
+
