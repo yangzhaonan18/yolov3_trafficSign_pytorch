@@ -21,15 +21,20 @@ import matplotlib.pyplot as plt
 #  my py files
 
 from model import Network, Lenet5, my_resnt18, FashionCNN
+
+
+from resnet import ResNet18
+
+
 from utils.dataset import MyDataset
 from utils.show import print_accuracy
  
 
 np.random.seed(0)
-classes = 118
-epochs  = 30
-batch_size = 64
-learning_rate = 0.002
+classes =  len(os.listdir("/headless/Desktop/yzn_file/code/PyTorch-YOLOv3-Tinghua100K/ALL_sign_data/ALL_data_in_2_train/all_crop_data/"))
+epochs  = 50
+batch_size = 64  # 64
+learning_rate = 0.002  # 0.002
 log_interval = 100
 input_size = 28 * 28 * 3  # for "Network" model
 train_ratio = 0.8 
@@ -42,9 +47,33 @@ os.environ['CUDA_VISIBLE_DEVICES']='4'
 writer = SummaryWriter("log_LetNet_5")
 # writer = SummaryWriter("log_fashionModel_2")
 
-info_file = "ALL_data_in/info.txt"
-names = "ALL_data_in/names.txt"
+info_file = "ALL_data_in_2_train/info.txt"
+names = "ALL_data_in_2_train/names.txt"
 
+pre_train = False
+weights_path = "checkpoints/model_acc_92__calss_112_epoch_14.pt"
+
+
+
+
+
+# train_transform = torchvision.transforms.Compose([
+#     torchvision.transforms.ToTensor(),
+#     torchvision.transforms.ToPILImage(),
+#     torchvision.transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),
+#     # transforms.Grayscale(num_output_channels=1),  #  to gray
+#     # transforms.Resize((30, 30), interpolation=2),
+#     # # transforms.CenterCrop((28, 28)),
+#     # transforms.RandomCrop((28, 28), padding=5, pad_if_needed=True),
+  
+#     torchvision.transforms.RandomRotation(15),
+#     torchvision.transforms.Resize((35, 35), interpolation=2),
+#     torchvision.transforms.RandomResizedCrop(28, scale=(0.8, 1.2), ratio=(0.9, 1.1), interpolation=2),
+    
+#      # torchvision.transforms.Resize((28, 28), interpolation=2),
+#     torchvision.transforms.ToTensor(),
+#     torchvision.transforms.Normalize(mean=[0.5], std=[0.5])  # mean=(0.5,), std=(0.5,))
+#     ])
 
 train_transform = torchvision.transforms.Compose([
     torchvision.transforms.ToTensor(),
@@ -52,17 +81,19 @@ train_transform = torchvision.transforms.Compose([
     torchvision.transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),
     # transforms.Grayscale(num_output_channels=1),  #  to gray
     # transforms.Resize((30, 30), interpolation=2),
-    # # transforms.CenterCrop((28, 28)),
+    # transforms.CenterCrop((28, 28)),
     # transforms.RandomCrop((28, 28), padding=5, pad_if_needed=True),
   
     torchvision.transforms.RandomRotation(15),
     torchvision.transforms.Resize((35, 35), interpolation=2),
     torchvision.transforms.RandomResizedCrop(28, scale=(0.8, 1.2), ratio=(0.9, 1.1), interpolation=2),
     
-     # torchvision.transforms.Resize((28, 28), interpolation=2),
+    # torchvision.transforms.Resize((28, 28), interpolation=2),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize(mean=[0.5], std=[0.5])  # mean=(0.5,), std=(0.5,))
     ])
+
+
 
 
 dataset = MyDataset(info_file, names, train_transform)
@@ -98,10 +129,12 @@ test_loader = torch.utils.data.DataLoader(
 
 # ####### model for experiments ############## 
 # model=Network()
-
+# 
 # model = my_resnt18(classes)
 # model = Lenet5(classes)
 model = FashionCNN(classes)
+
+# model = ResNet18(classes)
 
 
 
@@ -113,6 +146,9 @@ optimizer = torch.optim.Adam(params=model.parameters(), lr=learning_rate)
 criterion = torch.nn.CrossEntropyLoss()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if pre_train:
+    model.load_state_dict(torch.load(weights_path))    
+
 model.to(device)
 criterion.to(device)
 
@@ -138,7 +174,7 @@ for epoch in range(epochs):
         # image = transforms.ToPILImage()(torch.from_numpy(image.numpy()))
         
         # plt.figure(figsize=(4, 4))
-        # plt.ion()   
+        # plt.ion()
         # plt.axis('off')   
 
         # image_1 = image[0].squeeze(0).permute(1, 2, 0)  
@@ -242,10 +278,10 @@ for epoch in range(epochs):
 
     test_accuracy = int(100 * correct / len(test_loader))
 
-    if test_accuracy > 91 and flag == 0:
-        flag = 1
-        torch.save(model.state_dict(), f'model_acc_90__epoch_{epoch}.pt')
-        break #  stop training
+    # if test_accuracy > 91  and flag == 0:
+        # flag = 1
+    torch.save(model.state_dict(), f'checkpoints_4/model_acc_{test_accuracy}__calss_{classes}_epoch_{epoch}.pt')
+        # break #  stop training
 
 
     print(f"Epoch: {epoch},",
@@ -274,3 +310,7 @@ for epoch in range(epochs):
 
 
 # model.load_state_dict(torch.load('model.pt'))
+
+
+
+

@@ -8,11 +8,14 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
 
+from resnet import ResNet18
+
 from model import Lenet5, my_resnt18, FashionCNN
+ 
 
+classes = 115
 
-classes = 145
-weights_path = "model_acc_90__epoch_3.pt"
+weights_path = "checkpoints_4/model_acc_94__calss_115_epoch_14.pt"
 img_path = "all_data_noUse/GTSDB_JPG/18/00005.jpg"
 
 
@@ -24,6 +27,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 os.makedirs("output", exist_ok=True)
 
 model = FashionCNN(classes)
+# model = ResNet18(classes)
+
+
 model.load_state_dict(torch.load(weights_path))
 model.to(device)
 model.eval()

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-cd ./ALL_data_in
+cd ./ALL_data_in_2_train
+echo "    "
+echo "    "
+echo "    "
 echo "    "
 echo "create info.txt and name.txt for sign data ........"
 python createPath.py
