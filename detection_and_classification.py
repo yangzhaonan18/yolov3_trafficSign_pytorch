@@ -136,7 +136,7 @@ if __name__ == "__main__":
     # "/headless/Desktop/yzn_file/DataSetsH/gangjinDataSet/test_dataset/",  
     # "/headless/Desktop/yzn_file/DataSetsH/GTSDB/FullIJCNN2013",
     # "/headless/Desktop/yzn_file/DataSetsH/httpcvrr.ucsd.eduLISAlisa-traffic-sign-dataset.html/signDatabasePublicFramesOnly/aiua120306-1/frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/",
-    "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/train/",
+    # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/train/",
     # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/test/",
     # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/other/",
     # "/headless/Desktop/yzn_file/DataSetsH/VOC/VOCdevkit/VOC2012/JPEGImages/",
@@ -153,6 +153,7 @@ if __name__ == "__main__":
 
     # "/headless/Desktop/yzn_file/DataSetsH/DFGTSD/JPEGImages/JPEGImages/", 
     # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/train_just/",
+    "image_for_detect/Tinghua100K"
                 ]
 
     for dir_ in crop_dirs:
@@ -343,7 +344,7 @@ if __name__ == "__main__":
             train_results["imgs"][img_id] = {"objects": objects}
             # print("train_results = ", train_results)
 
-    file_name = "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/code/results/yangzhaonan.json"
+    file_name = "results/Tinghua100K_result.json"
     with open(file_name, "w") as file_object:
         json.dump(train_results, file_object)
  

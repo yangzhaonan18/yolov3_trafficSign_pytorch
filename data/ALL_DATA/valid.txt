@@ -1,0 +1,12 @@
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00000.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00001.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00002.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00003.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00004.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00005.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00006.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00007.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00008.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00009.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00010.jpg
+/headless/Desktop/yzn_file/DataSet_traffic_sign/ALL_DATA/CCTSDB_changsha/images_jpg/train/00011.jpg

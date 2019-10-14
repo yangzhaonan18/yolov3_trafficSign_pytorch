@@ -27,7 +27,7 @@ from tensorboardX import SummaryWriter
 
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES']='7'
+os.environ['CUDA_VISIBLE_DEVICES']='0'
 
 
 if __name__ == "__main__":
@@ -117,8 +117,8 @@ if __name__ == "__main__":
         "conf_noobj",
     ]
 
-    for epoch in range(int(opt.pretrained_weights.replace("checkpoints/yolov3_ckpt_", '').replace('.pth', '')) + 1, opt.epochs):
-    # for epoch in range(opt.epochs):
+    # for epoch in range(int(opt.pretrained_weights.replace("checkpoints/yolov3_ckpt_", '').replace('.pth', '')) + 1, opt.epochs):
+    for epoch in range(opt.epochs):
         model.train()
         start_time = time.time()
         
