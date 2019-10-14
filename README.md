@@ -3,9 +3,9 @@
 
 ## Installation
 ### Clone 
-
-$git clone https://github.com/yangzhaonan18/yolov3_trafficSign_pytorch
-   
+```
+git clone https://github.com/yangzhaonan18/yolov3_trafficSign_pytorch
+```  
     
 ### Download pretrained weights
 1. Download detection(yolov3) weights:
@@ -17,9 +17,9 @@ Baidu network disk link:
 download  and put it at: ALL_sign_data/checkpoints_4/model_acc_94__calss_115_epoch_14.pt
 
 ### Detect and classify an image
-
-$python detection_and_classification.py
-
+```
+python detection_and_classification.py
+```
 detect the images in "./image_for_detect/Tinghua100K/", and the images with results will be saved in "./output",
 the "Tinghua100K_result.json" result will be saved in "./result/"
 
