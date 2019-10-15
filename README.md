@@ -37,11 +37,15 @@ python3 my_result_classes.py
 
 results is:
 ```
-iou:0.5, size:[0,400), types:[w55, ...total 53...], accuracy:0.0, recall:0.0
-iou:0.5, size:[0,32), types:[w55, ...total 53...], accuracy:0.0, recall:0.0
-iou:0.5, size:[32,96), types:[w55, ...total 53...], accuracy:0.0, recall:0.0
-iou:0.5, size:[96,400), types:[w55, ...total 53...], accuracy:1, recall:1
-iou:0.5, size:[0,400), types:w55, accuracy:1, recall:1
+iou:0.5, size:[0,400), types:[w55, ...total 53...], accuracy:0.8845589434208381, recall:0.9304519337964154
+iou:0.5, size:[0,32), types:[w55, ...total 53...], accuracy:0.8160990712074303, recall:0.885752688172043
+iou:0.5, size:[32,96), types:[w55, ...total 53...], accuracy:0.9297398348652438, recall:0.9740492900277461
+iou:0.5, size:[96,400), types:[w55, ...total 53...], accuracy:0.9261477045908184, recall:0.8672897196261682
+iou:0.5, size:[0,400), types:w55, accuracy:0.9611650485436893, recall:0.908256880733945
+iou:0.5, size:[0,400), types:p27, accuracy:0.9156626506024096, recall:0.9047619047619048
+iou:0.5, size:[0,400), types:il80, accuracy:0.9746192893401016, recall:0.9746192893401016
+iou:0.5, size:[0,400), types:i1, accuracy:0.8571428571428571, recall:1.0
+iou:0.5, size:[0,400), types:il100, accuracy:0.89, recall:0.967391304347826
 ......
 ......
 ```

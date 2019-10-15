@@ -15,7 +15,7 @@ annos = json.loads(open(filedir).read())
 
 # result_anno_file = "./../results/ours_result_annos.json"
 # result_anno_file = "./../results/yangzhaonan.json"
-result_anno_file = "./../../results/Tinghua100K_result.json"
+result_anno_file = "./../../results/Tinghua100K_result_for_test.json"
 # result_anno_file = "./../../results/yangzhaonan.json"
 
 
