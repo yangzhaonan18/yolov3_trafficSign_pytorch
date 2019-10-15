@@ -13,6 +13,5 @@ echo "start  training ......."
 python classification.py
 echo "finish training, when test accuracy greater than 91%, save a weight and stop training"
 echo "weight save in : " 
-echo "/headless/Desktop/yzn_file/code/PyTorch-YOLOv3-Tinghua100K/ALL_sign_data/model_acc_90__epoch_3.pt"
 echo "    "
 echo "    "

@@ -45,7 +45,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sign_classes = 115
 # classes_weights_path = "ALL_sign_data/model_acc_90__epoch_4.pt"
 
-classes_weights_path = "ALL_sign_data/checkpoints_4/model_acc_94__calss_115_epoch_14.pt"
+classes_weights_path = "ALL_sign_data/checkpoints/model_acc_97__calss_115_epoch_10.pt"
 
 # os.makedirs("output", exist_ok=True)
 
@@ -105,8 +105,8 @@ if __name__ == "__main__":
     # prev_time = time.time()
 
     # to  class
-    model_class = FashionCNN(sign_classes)
-    # model_class = ResNet18(sign_classes)
+    # model_class = FashionCNN(sign_classes)
+    model_class = ResNet18(sign_classes)
     
 
     model_class.load_state_dict(torch.load(classes_weights_path))
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     # "/headless/Desktop/yzn_file/DataSetsH/gangjinDataSet/test_dataset/",  
     # "/headless/Desktop/yzn_file/DataSetsH/GTSDB/FullIJCNN2013",
     # "/headless/Desktop/yzn_file/DataSetsH/httpcvrr.ucsd.eduLISAlisa-traffic-sign-dataset.html/signDatabasePublicFramesOnly/aiua120306-1/frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/",
-    # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/train/",
+    "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/train/",
     # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/test/",
     # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/other/",
     # "/headless/Desktop/yzn_file/DataSetsH/VOC/VOCdevkit/VOC2012/JPEGImages/",
@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
     # "/headless/Desktop/yzn_file/DataSetsH/DFGTSD/JPEGImages/JPEGImages/", 
     # "/headless/Desktop/yzn_file/DataSetsH/Tinghua100K/data_all/train_just/",
-    "image_for_detect/Tinghua100K"
+    # "image_for_detect/Tinghua100K"
                 ]
 
     for dir_ in crop_dirs:
@@ -344,7 +344,7 @@ if __name__ == "__main__":
             train_results["imgs"][img_id] = {"objects": objects}
             # print("train_results = ", train_results)
 
-    file_name = "results/Tinghua100K_result.json"
+    file_name = "results/Tinghua100K_result_for_test.json"
     with open(file_name, "w") as file_object:
         json.dump(train_results, file_object)
  

@@ -31,7 +31,8 @@ from utils.show import print_accuracy
  
 
 np.random.seed(0)
-classes =  len(os.listdir("/headless/Desktop/yzn_file/code/PyTorch-YOLOv3-Tinghua100K/ALL_sign_data/ALL_data_in_2_train/all_crop_data/"))
+# classes =  len(os.listdir("/headless/Desktop/yzn_file/code/PyTorch-YOLOv3-Tinghua100K/ALL_sign_data/ALL_data_in_2_train/all_crop_data/"))
+classes = 115
 epochs  = 50
 batch_size = 64  # 64
 learning_rate = 0.002  # 0.002
@@ -132,9 +133,9 @@ test_loader = torch.utils.data.DataLoader(
 # 
 # model = my_resnt18(classes)
 # model = Lenet5(classes)
-model = FashionCNN(classes)
+# model = FashionCNN(classes)
 
-# model = ResNet18(classes)
+model = ResNet18(classes)
 
 
 
@@ -280,7 +281,7 @@ for epoch in range(epochs):
 
     # if test_accuracy > 91  and flag == 0:
         # flag = 1
-    torch.save(model.state_dict(), f'checkpoints_4/model_acc_{test_accuracy}__calss_{classes}_epoch_{epoch}.pt')
+    torch.save(model.state_dict(), f'checkpoints/model_acc_{test_accuracy}__calss_{classes}_epoch_{epoch}.pt')
         # break #  stop training
 
 

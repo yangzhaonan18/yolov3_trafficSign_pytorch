@@ -13,8 +13,8 @@ Baidu network disk link:
 download  and put it at: ./checkpoints/yolov3_ckpt_33.pth
 
 2. Download classifier(CNN) weights:
-Baidu network disk link:
-download  and put it at: ./ALL_sign_data/checkpoints_4/model_acc_94__calss_115_epoch_14.pt
+Baidu network disk link: 
+download  and put it at: ./ALL_sign_data/checkpoints/
 
 ### Detect and classify an image
 ```python
@@ -43,21 +43,36 @@ iou:0.5, size:[0,400), types:w55, accuracy:1, recall:1
 ```
 
 ## 3. How to train my dataset?
-### Train YOLOv3 detection
+### 3.1. Train YOLOv3 detection
 1. Download pretrained weights(on COCO): darknet53.conv.74 
-$ cd ./weights
-$ bash download_weights.sh
+```
+cd ./weights
+bash download_weights.sh
+```
 
-2. 
 
-### Train CNN classifier 
+2. Train YOLOv3 detection
+
+```
+cd ../
+python3 train.py --data_config config/Tinghua100K.data --pretrained_weights weights/darknet53.conv.74
+```
+
+The YOLOv3 training weights will be saved in ./checkpoints/
+### 3.2. Train CNN classifier 
 1. Download traffic sign data to train classifier
 Baidu network disk link: https://pan.baidu.com/s/133wOElvWHn0Fm4RzOGLk3w
-and unzip it in LL_sign_data/ALL_data_in_2_train/
+and unzip it in ALL_sign_data/ALL_data_in_2_train/
 
+```
+cd ./ALL_sign_data/
+bash  run.sh
+```
 
-## how to test my dataset?
+The train weights will be saved in ./ALL_sign_data/checkpoints
+
 
 ## how to train your dataset?
+
 
 
