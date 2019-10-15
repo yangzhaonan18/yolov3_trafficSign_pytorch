@@ -23,6 +23,10 @@ python3 detection_and_classification.py
 detect the images in "./image_for_detect/Tinghua100K/", 
 and the images with results will be saved in "./output", the "Tinghua100K_result.json" result will be saved in "./result/"
 
+images with results:
+<p align="center">
+  <img width="1000" src="image_for_github/00085.png">
+</p>
 
 ## 2. How to test the results?
 ```
