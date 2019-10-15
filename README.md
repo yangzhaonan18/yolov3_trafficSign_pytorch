@@ -2,12 +2,12 @@
 
 
 ## 1. Installation
-### git clone
+### 1.1. git clone
 ```python
 git clone https://github.com/yangzhaonan18/yolov3_trafficSign_pytorch
 ```  
     
-### Download pretrained weights
+### 1.2. Download pretrained weights
 1. Download detection(yolov3) weights:
 Baidu network disk link: 
 download  and put it at: ./checkpoints/yolov3_ckpt_33.pth
@@ -16,7 +16,7 @@ download  and put it at: ./checkpoints/yolov3_ckpt_33.pth
 Baidu network disk link: 
 download  and put it at: ./ALL_sign_data/checkpoints/
 
-### Detect and classify an image
+### 1.3. Detect and classify an image
 ```python
 python3 detection_and_classification.py
 ```
@@ -72,7 +72,7 @@ bash  run.sh
 The train weights will be saved in ./ALL_sign_data/checkpoints
 
 
-## how to train your dataset?
+## 4. how to train your dataset?
 
 
 
