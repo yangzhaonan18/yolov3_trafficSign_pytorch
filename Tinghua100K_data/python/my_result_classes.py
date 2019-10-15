@@ -5,8 +5,8 @@ import numpy as np
 import cv2
 import anno_func
 
-datadir = "../data/"
 
+datadir = "../data/"
 filedir = datadir + "annotations.json"
 
 # ids = open(datadir + "/test/ids.txt").read().splitlines()
@@ -15,7 +15,9 @@ annos = json.loads(open(filedir).read())
 
 # result_anno_file = "./../results/ours_result_annos.json"
 # result_anno_file = "./../results/yangzhaonan.json"
-result_anno_file = "/headless/Desktop/yzn_file/code/my_github/yolov3_trafficSign_pytorch/results/Tinghua100K_result.json"
+result_anno_file = "./../../results/Tinghua100K_result.json"
+# result_anno_file = "./../../results/yangzhaonan.json"
+
 
 results_annos = json.loads(open(result_anno_file).read())
 sm = anno_func.eval_annos(annos, results_annos, iou=0.5, types=anno_func.type45, check_type=True)
