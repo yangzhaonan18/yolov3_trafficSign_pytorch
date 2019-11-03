@@ -45,7 +45,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sign_classes = 115
 # classes_weights_path = "ALL_sign_data/model_acc_90__epoch_4.pt"
 
-classes_weights_path = "ALL_sign_data/checkpoints/model_acc_97__calss_115_epoch_10.pt"
+classes_weights_path = "ALL_sign_data/checkpoints/model_acc_97__class_115_epoch_10.pt"
 
 # os.makedirs("output", exist_ok=True)
 

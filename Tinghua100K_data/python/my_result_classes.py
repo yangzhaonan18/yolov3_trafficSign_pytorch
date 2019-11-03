@@ -6,6 +6,7 @@ import cv2
 import anno_func
 
 
+
 datadir = "../data/"
 filedir = datadir + "annotations.json"
 
