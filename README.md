@@ -82,7 +82,15 @@ bash  run.sh
 The train weights will be saved in ./ALL_sign_data/checkpoints
 
 
-## 4. how to train your dataset?
+## 4. how to train your dataset for YOLOv3?
 
+### 4.1 Prepare dataset
+```
+python3 train.py --pretrained_weights weights/darknet53.conv.74
+
+or 
+
+python3 train.py --pretrained_weights checkpoints/yolov3_ckpt_33.pth
+```
 
 
