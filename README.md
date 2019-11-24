@@ -9,12 +9,12 @@ git clone https://github.com/yangzhaonan18/yolov3_trafficSign_pytorch
     
 ### 1.2. Download pretrained weights
 1. Download detection(yolov3) weights:
-Baidu network disk link(234MB): https://pan.baidu.com/s/1BWySwi22nsFTB7-c0ualZA
+Baidu network disk link(234MB): https://pan.baidu.com/s/1BWySwi22nsFTB7-c0ualZA6
 
 download  and put it at: ./checkpoints/yolov3_ckpt_33.pth
 
 2. Download classifier(CNN) weights:
-Baidu network disk link(43MB): https://pan.baidu.com/s/1Id65qVFrAp-S5G--57LG2Q
+Baidu network disk link(43MB): https://pan.baidu.com/s/1Id65qVFrAp-S5G--57LG2Q6
 
 download  and put it at: ./ALL_sign_data/checkpoints/
 
